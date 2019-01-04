@@ -409,33 +409,37 @@ func testInfixExpression(
 }
 
 func TestBooleanExpression(t *testing.T) {
-	input := `
-true;
-	`
-
-	l := lexer.New(input)
-	p := New(l)
-	program := p.ParseProgram()
-	checkParserErrors(t, p)
-
-	if len(program.Statements) != 1 {
-		t.Fatalf("program.Statements does not contain %d. got=%d", 1, len(program.Statements))
+	tests := []struct {
+		input           string
+		expectedBoolean bool
+	}{
+		{"true;", true},
+		{"false;", false},
 	}
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
-	if !ok {
-		t.Fatalf("program.Statements[0] is not *ast.ExpressionStatement. got=%T", program.Statements[0])
-	}
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
 
-	bl, ok := stmt.Expression.(*ast.Boolean)
-	if !ok {
-		t.Fatalf("stmt not *ast.Boolean. got=%T", stmt.Expression)
-	}
-	if bl.Value != "true" {
-		t.Errorf("bl.Value is not %s. got=%s,", "true", bl.Value)
-	}
-	if bl.TokenLiteral() != "true" {
-		t.Errorf("bl.TokenLiteral is not %s. got=%s", "true", bl.TokenLiteral())
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain %d. got=%d", 1, len(program.Statements))
+		}
+
+		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("program.Statements[0] is not *ast.ExpressionStatement. got=%T", program.Statements[0])
+		}
+
+		bl, ok := stmt.Expression.(*ast.Boolean)
+		if !ok {
+			t.Fatalf("stmt not *ast.Boolean. got=%T", stmt.Expression)
+		}
+		if bl.Value != tt.expectedBoolean {
+			t.Errorf("bl.Value is not %t. got=%t,", tt.expectedBoolean, bl.Value)
+		}
+
 	}
 
 }
