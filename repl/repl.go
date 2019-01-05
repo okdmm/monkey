@@ -7,6 +7,7 @@ import (
 
 	"github.com/okdmm/monkey/evaluator"
 	"github.com/okdmm/monkey/lexer"
+	"github.com/okdmm/monkey/object"
 	"github.com/okdmm/monkey/parser"
 )
 
@@ -18,6 +19,7 @@ func Start(in io.Reader, out io.Writer) {
 	for {
 		fmt.Printf(PROMT)
 		scanned := scanner.Scan()
+		env := object.NewEnvironment()
 		if !scanned {
 			return
 		}
@@ -32,7 +34,7 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
