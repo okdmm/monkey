@@ -2,7 +2,6 @@ package evaluator
 
 import (
 	"fmt"
-	"testing"
 
 	"github.com/okdmm/monkey/ast"
 	"github.com/okdmm/monkey/object"
@@ -90,7 +89,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 }
 
 func applyFunction(fn object.Object, args []object.Object) object.Object {
-	function, ok := fn(*object.Function)
+	function, ok := fn.(*object.Function)
 	if !ok {
 		return newError("not a function: %s", fn.Type())
 	}
@@ -118,7 +117,7 @@ func unwrapRerurnValue(obj object.Object) object.Object {
 		return returnValue.Value
 	}
 
-	return ob
+	return obj
 }
 
 func evalExpressions(
@@ -309,22 +308,4 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 
 func newError(format string, a ...interface{}) *object.Error {
 	return &object.Error{Message: fmt.Sprintf(format, a...)}
-}
-
-func TestFunctionApplication(t *testing.T) {
-	tests := []struct {
-		input    string
-		expected int64
-	}{
-		{"let identity = fn(x) {x;}; identity(5);", 5},
-		{"let identity = fn(x) {return x;}; identity(5);", 5},
-		{"let double = fn(x) { return x;}; double(5);", 10},
-		{"let add = fn(x, y) {x + y;}; add(5, 5);", 10},
-		{"let add = fn(x, y) {x + y;}; add(5 + 5, add(5, 5));", 20},
-		{"fn(x) {x;}(5)", 5},
-	}
-
-	for _, tt := range tests {
-		testIntegerObject(t, testEval(tt.input), tt.expected)
-	}
 }
