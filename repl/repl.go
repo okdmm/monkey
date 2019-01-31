@@ -36,9 +36,9 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		evaluator.DefineMacros(program, macroEnv)
-		expanded := evaluator.ExpandMacro(program, macroEnv)
+		expanded := evaluator.ExpandMacros(program, macroEnv)
 
-		evaluated := evaluator.Eval(expand, env)
+		evaluated := evaluator.Eval(expanded, env)
 
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
