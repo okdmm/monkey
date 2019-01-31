@@ -35,10 +35,11 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluator.DefineMacro(program, macroEnv)
-		expand := evaluator.ExpandMacro(program, macroEnv)
+		evaluator.DefineMacros(program, macroEnv)
+		expanded := evaluator.ExpandMacro(program, macroEnv)
 
 		evaluated := evaluator.Eval(expand, env)
+
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
