@@ -50,7 +50,7 @@ func Lookup(op byte) (*Definition, error) {
 	return def, nil
 }
 
-type instructions []byte
+type Instructions []byte
 
 type Opcode byte
 
