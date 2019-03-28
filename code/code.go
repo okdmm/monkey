@@ -74,10 +74,6 @@ type Definition struct {
 	OperandWidths []int
 }
 
-var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}},
-}
-
 func Lookup(op byte) (*Definition, error) {
 	def, ok := definitions[Opcode(op)]
 	if !ok {
@@ -93,7 +89,13 @@ type Opcode byte
 
 const (
 	OpConstant Opcode = iota
+	OpAdd
 )
+
+var definitions = map[Opcode]*Definition{
+	OpConstant: {"OpConstant", []int{2}},
+	OpAdd:      {"OpAdd", []int{}},
+}
 
 func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 	operands := make([]int, len(def.OperandWidths))
